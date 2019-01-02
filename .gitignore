@@ -1,0 +1,6 @@
+site.retry
+roles/dbtier/files/banco.sql
+roles/dbtier/files/bd_centraldeservicos.tar.gz
+roles/glpi/files/backup_centraldeservicos.tar.gz
+roles/glpi/files/glpi-9.3.3.tgz
+.vscode/

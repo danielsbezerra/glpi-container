@@ -1,0 +1,13 @@
+---
+# Copy database dump file to remote host and restore it to database 'glpi'
+- name: Copy database dump file to /tmp
+  copy:
+    src: "files/{{ mariadb_dump_file }}"
+    dest: "/tmp/{{ mariadb_dump_file }}"
+
+- name: Unpack dump file into /tmp
+  unarchive:
+    src: "/tmp/{{ mariadb_dump_file }}"
+    dest: "/tmp"
+    remote_src: yes
+  become: yes

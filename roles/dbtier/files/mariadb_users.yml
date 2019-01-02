@@ -1,0 +1,18 @@
+# Example privileges string format
+# mydb.*:INSERT,UPDATE/anotherdb.*:SELECT/yetanotherdb.*:ALL
+
+mariadb_users:
+  - name: usr_glpi
+    password: "{{ mariadb_root_password }}"
+    priv: "*.*:ALL"
+    #host: '172.28.128.%'
+
+  - name: pferreira
+    password: "{{ mariadb_root_password }}"
+    priv: "*.*:ALL"
+    #host: '172.28.128.%'
+
+  - name: root
+    password: "{{ mariadb_root_password }}"
+    priv: "*.*:ALL"
+    host: "%"

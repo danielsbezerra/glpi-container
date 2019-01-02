@@ -1,0 +1,4 @@
+# default lower priority variables for this role
+
+# Login / users
+mariadb_root_password: "s7p0rt3"

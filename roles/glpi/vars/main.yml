@@ -1,0 +1,44 @@
+date_time: "date +%Y%m%d_%Hh%Mm%Ss"
+
+remi_repo_url: "http://rpms.remirepo.net/enterprise/remi-release-{{ ansible_distribution_major_version }}.rpm"
+remi_repo_gpg_key_url: "http://rpms.remirepo.net/RPM-GPG-KEY-remi"
+
+epel_repofile_path: "/etc/yum.repos.d/epel.repo"
+epel_repo_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+epel_repo_gpg_key_url: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+
+# packages
+glpi_prerequisites_packages:
+  - gd-last
+  - php-gd
+  - php-mbstring
+  - php-curl
+  - php-ldap
+  - php-xmlrpc
+  - php
+  - php-cli
+  - php-common
+  - php-devel
+  - php-fpm
+  - php-pdo
+  - php-pear
+  - php-xml
+  - php-openssl
+  - php-mysql
+  - php-mysqlnd
+  - php-zip
+  - php-mcrypt
+  - php-bcmath
+  - php-imap
+  - mod_auth_gssapi
+  - httpd
+
+php_default_version: "7.3"
+
+httpd_service: "httpd"
+firewalld_service: "firewalld"
+
+glpi_install_file: "glpi-9.3.3.tgz"
+glpi_custom_install_file: "backup_centraldeservicos.tar.gz"
+
+ngrok_file: "ngrok-stable-linux-amd64.zip"

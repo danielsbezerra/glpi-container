@@ -1,0 +1,42 @@
+version: "2"
+settings:
+
+  conductor:
+    # The Conductor container does the heavy lifting, and provides a portable
+    # Python runtime for building your target containers. It should be derived
+    # from the same distribution as you're building your target containers with.
+    base: centos:7
+    # roles_path:   # Specify a local path containing Ansible roles
+    # volumes:      # Provide a list of volumes to mount
+    # environment:  # List or mapping of environment variables
+
+  # Set the name of the project. Defaults to basename of the project directory.
+  # For built services, concatenated with service name to form the built image name.
+  project_name: glpi-container
+
+  k8s_namespace:
+     name: glpi-container
+     description: GLPI Ansible deploy with over k8s
+     display_name: GLPI
+
+  # The deployment_output_path is mounted to the Conductor container, and the 
+  # `run` and `deployment` commands then write generated Ansible playbooks to it.
+  # deployment_output_path: ./ansible-deployment
+
+services:
+  # Add your containers here, specifying the base image you want to build from.
+  web:
+    from: "centos:7"
+    roles:
+      - common
+    #   - glpi
+    #   - dbtier
+    ports:
+      - "80:80"
+    working_dir: /usr_app
+    user: usr_app
+    command: ["/usr/bin/dumb-init", "/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+    dev_overrides:
+      environment:
+        - "DEBUG=1"
+registries: {}

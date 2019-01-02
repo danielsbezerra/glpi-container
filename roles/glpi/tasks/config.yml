@@ -1,0 +1,64 @@
+---
+ #Change httpd root path
+- lineinfile:
+    path: "/etc/httpd/conf/httpd.conf"
+    regexp: "^DocumentRoot "
+    line: "DocumentRoot \"/var/www\""
+  become: yes
+
+ #Change override permissions
+- replace:
+    path: "/etc/httpd/conf/httpd.conf"
+    regexp: "AllowOverride None"
+    replace: "AllowOverride All"
+    backup: yes
+  become: yes
+
+- name: Open port 80 for http access
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+  become: yes
+
+# Set SELinux Permissive (required by GLPI)
+- name: Execute the command in remote shell; stdout goes to the specified file on the remote.
+  shell: setenforce 0
+  become: yes
+
+# Set SELinux configuration
+- name: Execute the command in remote shell; stdout goes to the specified file on the remote.
+  shell: "setsebool -P {{ item }} 1"
+  with_items:
+    - httpd_can_sendmail
+    - httpd_can_network_connect
+    - httpd_can_network_connect_db
+  # notify:
+  #   - restart httpd
+  #   - restart firewalld
+  become: yes
+
+- name: Restart the firewalld service to load in the firewall changes
+  service: 
+    name: "{{ firewalld_service }}"
+    state: restarted
+  become: yes
+
+# Generates warning message and always changed output
+- name: Restart httpd service
+  shell: "service {{ httpd_service }} restart"
+  become: yes
+  args:
+    warn: False
+
+- name: Download ngrok
+  get_url:
+    url: https://bin.equinox.io/c/4VmDzA7iaHb/{{ ngrok_file }}
+    dest: /tmp
+
+# Unarchive a file that is already on the remote machine
+- unarchive:
+    src: /tmp/{{ ngrok_file }}
+    dest: /usr/local/bin
+    remote_src: True
+  become: yes

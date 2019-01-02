@@ -1,0 +1,55 @@
+---
+# Apply any files configuration, if needed.
+# Right now, just ensure the service is running.
+
+# - name: Ensure MariaDB service is running
+#   systemd:
+#     state: started
+#     name: "{{ mariadb_service }}"
+#     enabled: yes
+#   tags: mariadb
+#   become: yes
+
+# - name: Install server config
+#   template:
+#     src: "templates/my.cnf.j2"
+#     dest: "{{ mariadb_config }}"
+#     owner: root
+#     group: root
+#     mode: 0644
+#   notify: restart mariadb
+#   tags: mariadb
+#   become: yes
+
+# - name: Ensure service is started didn't work!!!
+#   service:
+#     name: "{{ mariadb_service }}"
+#     state: started
+#     enabled: yes
+#   tags: mariadb
+#   become: yes
+
+- name: Copy cnf file that makes MyISAM the default engine (required by GLPI)
+  copy:
+    src: files/server.cnf
+    dest: /etc/my.cnf.d/server.cnf
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: Copy shell script backup file used by crontab
+  copy:
+    src: files/{{ mariadb_sh_bkp_file }}
+    dest: /usr/local/sbin/{{ mariadb_sh_bkp_file }}
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+# Generates warning message and always changed output
+- name: Ensure service is started 
+  shell: service mysql start
+  become: yes
+  args:
+    warn: False

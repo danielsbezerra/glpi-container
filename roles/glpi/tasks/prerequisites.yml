@@ -1,0 +1,61 @@
+---
+# Remove remi-php54 repo and clean up metadata cache
+- name: Remove remi-php54 repo and clean up left-over metadata
+  yum_repository:
+    name: remi-php54
+    state: absent
+  tags: glpi
+  become: yes
+
+
+- name: Add remi-php73
+  yum_repository:
+    name: remi-php73
+    description: Remi's PHP 7.3 RPM repository for Enterprise Linux $releasever - $basearch
+    mirrorlist: http://rpms.remirepo.net/enterprise/7.3/php73/mirror
+    enabled: yes
+    gpgcheck: 1
+    gpgkey: http://rpms.remirepo.net/RPM-GPG-KEY-remi
+  tags: glpi
+  become: yes
+
+
+- name: Install remi repo
+  yum:
+    name: "{{ remi_repo_url }}"
+    state: present
+  tags: glpi
+  become: yes
+
+- name: Import remi GPG key
+  rpm_key:
+    key: "{{ remi_repo_gpg_key_url }}"
+    state: present
+  tags: glpi
+  become: yes
+
+
+- name: Install EPEL repo
+  yum:
+    name: "{{ epel_repo_url }}"
+    state: present
+  retries: 2
+  delay: 25
+  tags: glpi
+  become: yes
+
+- name: Import EPEL GPG key
+  rpm_key:
+    key: "{{ epel_repo_gpg_key_url }}"
+    state: present
+  tags: glpi
+  become: yes
+
+
+- name: Install prerequisites
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ glpi_prerequisites_packages }}"
+  tags: glpi
+  become: yes

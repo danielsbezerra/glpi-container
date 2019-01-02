@@ -1,0 +1,33 @@
+---
+- name: Drop glpi database before restore (make idempotent)
+  mysql_db:
+    name: glpi
+    state: absent
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+
+- name: Restore glpi database
+  mysql_db:
+    name: glpi
+    state: import
+    target: "/tmp/{{ mariadb_sql_file }}"
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+  become: yes
+
+- name: Drop unnecessaries databases
+  mysql_db:
+    name: "{{ item }}"
+    state: absent
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+  with_items: "{{ mariadb_unnecessary_databases }}"
+
+- name: Remove anonymous users
+  mysql_user:
+    name: ""
+    host_all: true
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+    state: absent
+  tags: mariadb

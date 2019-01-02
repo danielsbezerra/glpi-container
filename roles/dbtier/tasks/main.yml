@@ -1,0 +1,6 @@
+---
+- include_tasks: install.yml
+- include_tasks: config.yml
+- include_tasks: root-setup.yml
+- include_tasks: prepare.yml
+- include_tasks: databases.yml

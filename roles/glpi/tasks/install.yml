@@ -1,0 +1,51 @@
+---
+# - name: Download glpi tar.gz file
+#   get_url:
+#     url: "https://github.com/glpi-project/glpi/releases/download/9.3.3/glpi-9.3.3.tgz"
+#     dest: "/tmp/glpi-9.3.3.tar.gz"
+#     mode: 0444
+
+# Install custom GLPI 9.1
+- copy:
+    src: "files/{{ glpi_custom_install_file }}"
+    dest: "/tmp/{{ glpi_custom_install_file }}"
+  become: yes
+
+- name: Unpack custom GLPI 9.1
+  unarchive:
+    src: "/tmp/{{ glpi_custom_install_file }}"
+    dest: "/var/www/"
+    owner: root
+    group: root
+    mode: 0777
+    remote_src: yes
+  become: yes
+
+# Backup custom GLPI 9.1
+- name: Backup custom GLPI 9.1
+  shell: cp -a /var/www/glpi /tmp/{{ glpi_custom_install_file }}.bak
+  become: yes
+
+# Install custom GLPI 9.3
+- copy:
+    src: "files/{{ glpi_install_file }}"
+    dest: "/tmp/{{ glpi_install_file }}"
+  become: yes
+
+- name: Unpack GLPI 9.3
+  unarchive:
+    src: "/tmp/{{ glpi_install_file }}"
+    dest: "/var/www/"
+    owner: apache
+    group: apache
+    mode: 0777
+    remote_src: yes
+  become: yes
+
+# Teste PHP
+- copy:
+    src: "files/index.php"
+    dest: "/var/www/html/index.php"
+  become: yes
+
+
