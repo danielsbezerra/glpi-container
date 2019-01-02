@@ -1,0 +1,5 @@
+# packages
+commom_packages:
+  - nano
+  - wget
+  - unzip

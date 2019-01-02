@@ -1,4 +1,3 @@
-# default lower priority variables for this role
-
 # Login / users
 mariadb_root_password: "s7p0rt3"
+mariadb_allow_empty_password: "yes"
